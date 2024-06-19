@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/manifest_schema.json",
+  "filename": "EyeHelper.dll",
+  "author": "xen",
+  "name": "Debug Eye Helper",
+  "uniqueName": "xen.EyeHelper",
+  "version": "1.0.0",
+  "owmlVersion": "2.12.1",
+  "dependencies": []
+}
