@@ -16,7 +16,7 @@ namespace EyeHelper
                 {
                     Locator.GetSceneMenuManager().pauseMenu.OnSkipToNextTimeLoop();
                     PlayerData._currentGameSave.warpedToTheEye = false;
-                    LoadManager.LoadSceneAsync(OWScene.SolarSystem, true, LoadManager.FadeType.ToBlack);
+                    LoadManager.LoadScene(OWScene.SolarSystem, LoadManager.FadeType.ToBlack, 0.5f);
                 };
             }
             if (LoadManager.GetCurrentScene() == OWScene.SolarSystem)
@@ -26,7 +26,7 @@ namespace EyeHelper
                 {
                     Locator.GetSceneMenuManager().pauseMenu.OnSkipToNextTimeLoop();
                     PlayerData._currentGameSave.warpedToTheEye = true;
-                    LoadManager.LoadSceneAsync(OWScene.EyeOfTheUniverse, true, LoadManager.FadeType.ToBlack);
+                    LoadManager.LoadScene(OWScene.EyeOfTheUniverse, LoadManager.FadeType.ToBlack, 0.5f);
                 };
             }
         }
