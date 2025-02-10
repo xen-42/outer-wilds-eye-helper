@@ -21,6 +21,8 @@ namespace EyeHelper
             if (scene.name == LoadManager.SceneToName(OWScene.EyeOfTheUniverse))
             {
                 _instance.ModHelper.Events.Unity.FireOnNextUpdate(() => Locator.GetPlayerSuit().SuitUp(instantSuitUp: true));
+                // Make sure pause lock is removed
+                GameObject.FindObjectOfType<PauseCommandListener>().RemovePauseCommandLock();
             }
         }
 
