@@ -4,7 +4,7 @@
   "author": "xen",
   "name": "Debug Eye Helper",
   "uniqueName": "xen.EyeHelper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owmlVersion": "2.12.1",
   "dependencies": []
 }
