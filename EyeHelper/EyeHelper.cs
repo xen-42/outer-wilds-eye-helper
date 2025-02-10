@@ -1,15 +1,28 @@
-﻿using HarmonyLib;
-using OWML.Common;
+﻿using OWML.Common;
 using OWML.ModHelper;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EyeHelper
 {
-    [HarmonyPatch]
     public class EyeHelper : ModBehaviour
     {
-        public static EyeState eyeState;
+        private static EyeHelper _instance;
+
+        public void Awake()
+        {
+            _instance = this;
+            SceneManager.sceneLoaded += OnSceneChanged;
+        }
+
+        private void OnSceneChanged(Scene scene, LoadSceneMode _)
+        {
+            if (scene.name == LoadManager.SceneToName(OWScene.EyeOfTheUniverse))
+            {
+                _instance.ModHelper.Events.Unity.FireOnNextUpdate(() => Locator.GetPlayerSuit().SuitUp(instantSuitUp: true));
+            }
+        }
 
         public override void SetupPauseMenu(IPauseMenuManager pauseMenu)
         {
@@ -22,7 +35,6 @@ namespace EyeHelper
                     // This just unpauses
                     Locator.GetSceneMenuManager().pauseMenu.OnSkipToNextTimeLoop();
                     PlayerData._currentGameSave.warpedToTheEye = false;
-                    eyeState = EyeState.Undefined;
                     LoadManager.LoadScene(OWScene.SolarSystem, LoadManager.FadeType.ToBlack, 0.5f);
                 };
             }
@@ -32,21 +44,19 @@ namespace EyeHelper
                 {
                     // This just unpauses
                     Locator.GetSceneMenuManager().pauseMenu.OnSkipToNextTimeLoop();
-                    eyeState = EyeState.AboardVessel;
-                    StartCoroutine(LoadEye());
+                    StartCoroutine(LoadEye(true));
                 };
 
                 pauseMenu.MakeSimpleButton("GO TO THE ANCIENT GLADE", 3, true).OnSubmitAction += () =>
                 {
                     // This just unpauses
                     Locator.GetSceneMenuManager().pauseMenu.OnSkipToNextTimeLoop();
-                    eyeState = EyeState.ForestIsDark;
-                    StartCoroutine(LoadEye());
+                    StartCoroutine(LoadEye(false));
                 };
             }
         }
 
-        private IEnumerator LoadEye()
+        private IEnumerator LoadEye(bool toVessel)
         {
             // Wait a bit in case we're impatient and just woke up else it glitches out at the eye scene and disables movement
             var cameraEffects = GameObject.FindObjectOfType<PlayerCameraEffectController>();
@@ -56,19 +66,10 @@ namespace EyeHelper
             }
 
             // Else it overrides the state
-            PlayerData._currentGameSave.warpedToTheEye = eyeState == EyeState.AboardVessel;
-            LoadManager.LoadScene(OWScene.EyeOfTheUniverse, LoadManager.FadeType.ToBlack, 0.5f);
-        }
+            _instance.ModHelper.Console.WriteLine("Loading the Eye");
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(EyeStateManager), nameof(EyeStateManager.Awake))]
-        public static void Patch(EyeStateManager __instance)
-        {
-            if (eyeState != EyeState.Undefined)
-            {
-                __instance._initialState = eyeState;
-                eyeState = EyeState.Undefined;
-            }
+            PlayerData._currentGameSave.warpedToTheEye = toVessel;
+            LoadManager.LoadScene(OWScene.EyeOfTheUniverse, LoadManager.FadeType.ToBlack, 0.5f);
         }
     }
 }
